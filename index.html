@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramienta Web</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Load Tesseract UMD build so we can use global Tesseract.createWorker -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <button class="sidebar-button active" data-section="principal">Inicio</button>
+            <button class="sidebar-button" data-section="subir-imagen">Subir imagen</button>
+            <button class="sidebar-button" data-section="editar-texto">Editar texto</button>
+            <button class="sidebar-button" data-section="subir-audio">Subir audio</button>
+            <button class="sidebar-button" data-section="modificar-srt">Modificar SRT</button>
+            <button class="sidebar-button" data-section="ajuustes">Ajuustes</button>
+            <button class="sidebar-button" data-section="historial">Historial</button>
+            <button class="sidebar-button" data-section="descargar">Descargar</button>
+        </aside>
+        <main class="main-content">
+            <div id="principal-section" class="content-section active">
+                <div class="section-panel principal-hero">
+                    <div class="hero-left">
+                        <h2 class="hero-title">Editor de Subtítulos & OCR</h2>
+                        <p class="hero-desc">Carga imágenes para OCR, edita texto, sube audio, ajusta subtítulos con una vista de espectrograma y descarga .srt. Comienza desde aquí.</p>
+                        <div class="hero-actions">
+                            <button class="action-button primary" data-section-target="subir-imagen">Comenzar - Imágenes</button>
+                            <button class="action-button" data-section-target="subir-audio">Comenzar - Audio</button>
+                        </div>
+                        <div class="creator-badge" title="Creador">
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=320&auto=format&fit=crop&ixlib=rb-4.0.3&s=0b4b1a3b6b3f1b2f3a2d4c6e7f8a9b0c" alt="Creador" />
+                            <div class="creator-text">Creado por: Juan Pérez</div>
+                        </div>
+                    </div>
+                    <div class="hero-right" aria-hidden="true">
+                        <!-- Decorative app screenshot background -->
+                        <div class="app-screenshot" role="img" aria-label="Vista de la aplicación"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="subir-imagen-section" class="content-section">
+                <h2>Subir imagen</h2>
+                <div class="section-panel">
+                    <h3>Cargar o Pegar Imagen</h3>
+                    <div class="image-upload-area">
+                        <input type="file" id="image-input" accept="image/*" style="display: none;">
+                        <div id="drop-area" class="drop-area">
+                            <p>Arrastra una imagen aquí o haz clic para subir</p>
+                            <button id="select-image-button" type="button" class="action-button">Seleccionar Imagen</button>
+                        </div>
+                        <p class="paste-instruction">O pega una imagen con <kbd>Ctrl</kbd>+<kbd>V</kbd> / <kbd>Win</kbd>+<kbd>V</kbd></p>
+                    </div>
+                    <div class="section-panel" id="preprocessing-options-panel">
+                        <h3>Opciones de Preprocesado</h3>
+                        <div class="preprocessing-options">
+                            <label><input type="radio" name="preprocessing" value="none" checked> Ninguno</label>
+                            <label><input type="radio" name="preprocessing" value="grayscale-contrast"> Escala de Grises + Contraste</label>
+                            <label><input type="radio" name="preprocessing" value="binarization"> Binarización por Umbral</label>
+                        </div>
+                    </div>
+                    <div id="image-preview-container" class="image-preview-container">
+                        <div id="image-gallery" class="image-gallery" aria-label="Galería de imágenes">
+                            <!-- Thumbnails will be injected here -->
+                        </div>
+                        <img id="image-preview" src="#" alt="Vista previa de la imagen" style="display: none;">
+                        <canvas id="image-canvas" style="display: none;"></canvas> <!-- Hidden canvas for processing -->
+                    </div>
+                </div>
+                <div class="section-panel">
+                    <h3>Escanear Imagen (OCR)</h3>
+                    <div class="ocr-controls">
+                        <label for="ocr-language-select">Idioma OCR:</label>
+                        <select id="ocr-language-select">
+                            <option value="spa">Español</option>
+                            <option value="eng">Inglés</option>
+                            <option value="spa+eng">Español + Inglés</option>
+                        </select>
+                        <button id="scan-image-button" class="action-button primary" disabled>Escanear Imagen</button>
+                        <p id="scan-message" class="hidden">Escaneando imagen...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="editar-texto-section" class="content-section hidden">
+                <h2>Editar texto</h2>
+                <div class="section-panel">
+                    <h3>Texto Escaneado</h3>
+                    <div class="text-edit-area">
+                        <div id="scanned-text-output" contenteditable="true" placeholder="El texto escaneado aparecerá aquí..." class="contenteditable-div"></div>
+                        <div class="edit-actions" style="margin-top:0.75rem;">
+                            <button id="remove-empty-lines-button" class="action-button">Eliminar vacíos</button>
+                            <button id="ready-button" class="action-button primary" style="margin-left:0.5rem;">Listo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Otras secciones se añadirán aquí más adelante, inicialmente ocultas -->
+            <div id="subir-audio-section" class="content-section hidden">
+                <h2>Subir audio</h2>
+                <div class="section-panel">
+                    <h3>Cargar audio</h3>
+                    <div class="audio-upload-area">
+                        <input type="file" id="audio-input" accept="audio/*" style="display: none;">
+                        <button id="select-audio-button" type="button" class="action-button">Seleccionar audio</button>
+                        <p id="audio-filename" style="margin-top:0.75rem; color:var(--secondary-color);"></p>
+                        <div id="audio-preview-container" style="margin-top:1rem; display:none;">
+                            <audio id="audio-preview" controls></audio>
+                        </div>
+                        <div style="margin-top:0.75rem;">
+                            <button id="audio-ready-button" class="action-button primary" style="display:none;">Listo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="modificar-srt-section" class="content-section hidden">
+                <h2>Modificar SRT</h2>
+                <div class="section-panel" style="padding:0.5rem 1rem 1rem 1rem;">
+                    <div id="spectrogram-bar" class="spectrogram-bar" tabindex="0" title="Barra de spectrograma — desplázala y haz zoom horizontal con Ctrl+Rueda">
+                        <canvas id="spectrogram-canvas" class="spectrogram-canvas"></canvas>
+                        <div id="spectrogram-regions-container" class="spectrogram-regions-container"></div>
+                        <div id="spectrogram-hover-line" class="spectrogram-hover-line"></div>
+                    </div>
+                </div>
+                <!-- New: SRT Editor Panel -->
+                <div class="section-panel srt-editor-panel">
+                    <h3>Editor de Subtítulos (SRT)</h3>
+                    <div class="srt-table-container">
+                        <table id="srt-table" class="srt-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Inicio</th>
+                                    <th>Fin</th>
+                                    <th>Contenido</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- SRT rows will be inserted here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- New "Listo" button for Modificar SRT -->
+                    <div style="margin-top:0.75rem; display:flex; gap:0.5rem; align-items:center;">
+                        <button id="srt-ready-button" class="action-button primary">Listo</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New "Ajuustes" section with mini documentation -->
+            <div id="ajuustes-section" class="content-section hidden">
+                <h2>Ajuustes</h2>
+                <div class="section-panel">
+                    <h3>¿Qué hace cada sección?</h3>
+                    <ul style="margin-top:0.5rem; color:var(--secondary-color);">
+                        <li><strong>Subir imagen:</strong> carga y preprocesa imágenes (escala de grises, binarización) para OCR.</li>
+                        <li><strong>Editar texto:</strong> revisa y corrige el texto escaneado; eliminar líneas vacías y guardar.</li>
+                        <li><strong>Subir audio:</strong> carga el audio, muestra vista previa y genera el espectrograma.</li>
+                        <li><strong>Modificar SRT:</strong> edita tiempos y textos en la tabla, ajusta límites arrastrando las regiones sobre el espectrograma.</li>
+                        <li><strong>Descargar:</strong> exporta el SRT con el nombre del archivo de audio cargado y reinicia cache si es necesario.</li>
+                    </ul>
+                </div>
+                <div class="section-panel">
+                    <h3>¿Qué es un archivo .srt?</h3>
+                    <p style="margin-top:0.5rem; color:var(--secondary-color);">Un SRT es un formato de subtítulos simple: entradas numeradas con tiempos de inicio y fin (HH:MM:SS,ms) y el texto asociado, separado por líneas vacías.</p>
+                </div>
+                <div class="section-panel">
+                    <h3>Cómo usarlo aquí</h3>
+                    <ol style="margin-top:0.5rem; color:var(--secondary-color);">
+                        <li>Escanea o pega imágenes para obtener el texto (OCR).</li>
+                        <li>Corrige el texto en "Editar texto" y presiona "Listo".</li>
+                        <li>Sube el audio y genera el espectrograma.</li>
+                        <li>En "Modificar SRT" ajusta los tiempos arrastrando los bordes de cada región o usando las teclas.</li>
+                        <li>Descarga el archivo .srt desde "Descargar".</li>
+                    </ol>
+                </div>
+                <div class="section-panel">
+                    <h3>Atajos de teclado importantes</h3>
+                    <ul style="margin-top:0.5rem; color:var(--secondary-color);">
+                        <li><kbd>Espacio</kbd>: reproducir/pausar (respetando la región seleccionada).</li>
+                        <li><kbd>q</kbd>: seleccionar región anterior.</li>
+                        <li><kbd>w</kbd> o <kbd>Enter</kbd> o <kbd>Flecha Derecha</kbd>: seleccionar región siguiente.</li>
+                        <li><kbd>s</kbd>: reproducir últimos 2 segundos de la región seleccionada.</li>
+                        <li><kbd>d</kbd>: reproducir 2s después del final de la región y volver.</li>
+                        <li><kbd>e</kbd>: ajustar inicio de la región seleccionada al final anterior +20ms.</li>
+                        <li><kbd>r</kbd>: ajustar fin de la región seleccionada al inicio siguiente -20ms.</li>
+                    </ul>
+                </div>
+                <div class="section-panel">
+                    <h3>Opciones de edición de cuadro de audio y tiempos SRT</h3>
+                    <ul style="margin-top:0.5rem; color:var(--secondary-color);">
+                        <li>Arrastra los bordes izquierdo/derecho de las regiones sobre el espectrograma para cambiar inicio/fin.</li>
+                        <li>Al seleccionar una región, la reproducción se ajusta automáticamente a ese intervalo para revisión precisa.</li>
+                        <li>Usa las manos/indicadores visuales en los bordes para saber cuándo puedes mover y cuando estás arrastrando.</li>
+                        <li>Presiona "Listo" en la sección SRT para guardar y pasar a descargar.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Historial section (new) -->
+            <div id="historial-section" class="content-section hidden">
+                <h2>Historial</h2>
+                <div class="section-panel">
+                    <input id="history-search" type="search" placeholder="Buscar historial..." style="width:100%; padding:0.6rem; border:1px solid var(--border-color); border-radius:8px;">
+                    <div id="history-list" style="margin-top:1rem; display:flex; flex-direction:column; gap:0.5rem; max-height:320px; overflow:auto;"></div>
+                </div>
+            </div>
+
+            <div id="descargar-section" class="content-section hidden">
+                <h2>Descargar</h2>
+                <p>Contenido para descargar.</p>
+                <div class="section-panel" style="display:flex; gap:0.5rem; align-items:center;">
+                    <button id="reset-cache-button" class="action-button">Reiniciar</button>
+                    <button id="add-to-history-button" class="action-button" style="margin-left:0.5rem;">Agregar al historial</button>
+                    <span id="cache-status" style="color:var(--secondary-color); font-size:0.95rem; margin-left:0.5rem;"></span>
+                </div>
+
+                <!-- Confirmation modal for clearing cache -->
+                <div id="confirm-clear-modal" class="modal hidden" aria-hidden="true">
+                    <div class="modal-backdrop"></div>
+                    <div class="modal-content">
+                        <h3>Confirmar reinicio</h3>
+                        <p>¿Deseas borrar la caché local? Esta acción limpiará imágenes, texto escaneado, audio y espectrograma, pero no eliminará el historial guardado.</p>
+                        <div style="display:flex; gap:0.5rem; margin-top:1rem; justify-content:flex-end;">
+                            <button id="confirm-clear-cancel" class="action-button">Cancelar</button>
+                            <button id="confirm-clear-yes" class="action-button primary">Sí, borrar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New: SRT download panel -->
+                <div class="section-panel" style="margin-top:0.75rem;">
+                    <button id="download-srt-button" class="action-button primary">Descargar archivo srt</button>
+                    <div id="download-progress" style="height:10px; background:#eee; border-radius:6px; overflow:hidden; margin-top:0.5rem; display:none;">
+                        <div id="download-progress-bar" style="height:100%; width:0%; background:var(--primary-color); transition:width 120ms linear;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script type="module" src="main.js"></script>
+</body>
+</html>

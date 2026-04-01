@@ -1,0 +1,733 @@
+:root {
+    --primary-color: #4A90E2; /* Un azul vibrante */
+    --secondary-color: #6C7A89; /* Gris oscuro para texto */
+    --background-color: #F8F9FA; /* Blanco roto para el fondo */
+    --sidebar-bg-color: #2C3E50; /* Azul oscuro para la barra lateral */
+    --button-hover-bg: #5A9BD5; /* Azul más claro al pasar el ratón */
+    --text-color-light: #ECF0F1; /* Texto claro para la barra lateral */
+    --text-color-dark: #34495E; /* Texto oscuro para el contenido principal */
+    --border-radius-base: 8px;
+    --spacing-unit: 1rem;
+    --panel-bg-color: #FFFFFF;
+    --border-color: #E0E6ED;
+}
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color-dark);
+    line-height: 1.6;
+    display: flex;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+}
+
+.sidebar {
+    width: 220px; /* Ancho fijo para la barra lateral */
+    background-color: var(--sidebar-bg-color);
+    color: var(--text-color-light);
+    padding: var(--spacing-unit) 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-button {
+    width: 90%;
+    padding: var(--spacing-unit) 1.2rem;
+    margin: 0.5rem 0;
+    background-color: transparent;
+    border: none;
+    color: var(--text-color-light);
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border-radius: var(--border-radius-base);
+    font-weight: 500;
+}
+
+.sidebar-button:hover {
+    background-color: var(--button-hover-bg);
+    transform: translateX(5px);
+}
+
+.sidebar-button.active {
+    background-color: var(--primary-color);
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-button.active:hover {
+    background-color: var(--primary-color); /* No cambiar al pasar el ratón si ya está activo */
+    transform: none;
+}
+
+.main-content {
+    flex-grow: 1; /* Ocupa el espacio restante */
+    padding: 2rem 3rem;
+    background-color: var(--background-color); /* Un fondo blanco roto para el contenido principal */
+    margin: 1rem; /* Margen alrededor del contenido principal */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-base);
+    overflow-y: auto; /* Permite desplazamiento si el contenido es demasiado largo */
+}
+
+.main-content h1 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 2.2rem;
+}
+
+.main-content h2 {
+    color: var(--text-color-dark);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.main-content h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.main-content p {
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+}
+
+/* Ocultar secciones no activas */
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Principal / hero landing styles */
+.principal-hero {
+    display: flex;
+    gap: 1.25rem;
+    align-items: stretch;
+    padding: 1.25rem;
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(248,249,250,0.95));
+    min-height: 300px;
+    overflow: hidden;
+    position: relative;
+}
+.principal-hero .hero-left {
+    flex: 1 1 460px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem 1.25rem;
+}
+.principal-hero .hero-right {
+    flex: 0 0 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.hero-title {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    animation: slideUpFade 700ms ease both;
+}
+.hero-desc {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    animation: slideUpFade 900ms ease both;
+}
+.hero-actions { display:flex; gap:0.6rem; margin-bottom:1rem; }
+.hero-actions .action-button { min-width:160px; }
+
+/* Creator badge */
+.creator-badge {
+    display:flex;
+    gap:0.6rem;
+    align-items:center;
+    margin-top:0.5rem;
+    background: rgba(0,0,0,0.03);
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    width: fit-content;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    animation: fadeIn 1200ms ease both;
+}
+.creator-badge img {
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid rgba(255,255,255,0.7);
+}
+.creator-text {
+    font-weight:600;
+    color:var(--text-color-dark);
+    font-size:0.95rem;
+}
+
+/* Decorative app screenshot area */
+.app-screenshot {
+    width: 380px;
+    height: 220px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    background-image: url('https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=2b6d6a9e3b9f6d4a9d8c5a7b6c2e1f0a');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    transform: translateY(10px);
+    animation: floatSlow 4500ms ease-in-out infinite;
+}
+
+/* small animated overlay to hint app screenshot */
+.app-screenshot:after {
+    content: '';
+    position: absolute;
+    left: -30%;
+    top: -30%;
+    width: 160%;
+    height: 160%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.0) 40%, rgba(255,255,255,0.06) 100%);
+    transform: rotate(25deg);
+    animation: shimmer 2400ms linear infinite;
+    opacity: 0.9;
+}
+
+/* small entrance animations */
+@keyframes slideUpFade {
+    from { transform: translateY(8px); opacity:0; }
+    to { transform: translateY(0); opacity:1; }
+}
+@keyframes fadeIn {
+    from { opacity:0; transform: translateY(6px); }
+    to { opacity:1; transform: translateY(0); }
+}
+@keyframes floatSlow {
+    0% { transform: translateY(6px); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(6px); }
+}
+@keyframes shimmer {
+    0% { transform: translateX(-40%) rotate(25deg); opacity:0.0; }
+    20% { opacity:0.6; }
+    60% { opacity:0.6; }
+    100% { transform: translateX(40%) rotate(25deg); opacity:0.0; }
+}
+
+/* make sure hero stacks nicely on small screens */
+@media (max-width: 900px) {
+    .principal-hero { flex-direction: column; gap: 1rem; min-height: 360px; }
+    .principal-hero .hero-right { order: -1; width:100%; display:flex; justify-content:center; }
+    .app-screenshot { width: 92%; height: 220px; }
+}
+
+/* Estilo para el área editable del texto escaneado: añadir padding interior para que el texto no quede pegado al borde */
+.contenteditable-div {
+    padding: 0.75rem 1rem; /* espacio arriba/abajo y a los lados (derecho/izquierdo) */
+    min-height: 120px;
+    outline: none;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--text-color-dark);
+    background-color: transparent;
+}
+
+/* Estilos para los paneles dentro de las secciones */
+.section-panel {
+    background-color: var(--panel-bg-color);
+    border-radius: var(--border-radius-base);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+}
+
+/* Estilos para el área de carga de imagen */
+.image-upload-area {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.drop-area {
+    border: 2px dashed var(--primary-color);
+    border-radius: var(--border-radius-base);
+    padding: 2rem;
+    margin: 1rem 0;
+    background-color: #F0F6FC;
+    color: var(--secondary-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.drop-area:hover,
+.drop-area.drag-over {
+    background-color: #E6F2FF;
+    border-color: var(--primary-color);
+}
+
+.drop-area p {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: var(--text-color-dark);
+}
+
+.paste-instruction {
+    font-size: 0.95rem;
+    color: var(--secondary-color);
+    margin-top: 0.5rem;
+}
+
+.paste-instruction kbd {
+    display: inline-block;
+    padding: 0.2em 0.4em;
+    font-size: 0.8em;
+    line-height: 1;
+    color: #444;
+    vertical-align: middle;
+    background-color: #fafafa;
+    border: 1px solid #c6cbd1;
+    border-bottom-color: #959da5;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 #959da5;
+}
+
+.image-preview-container {
+    margin-top: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-base);
+    background-color: #F8F9FA;
+    padding: 1rem;
+    min-height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-preview-container img {
+    max-width: 100%;
+    max-height: 300px;
+    height: auto;
+    border-radius: var(--border-radius-base);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* New spectrogram bar styles */
+.spectrogram-bar {
+    width: auto; /* Permite que la barra sea más estrecha que el contenedor si es necesario */
+    max-width: 100%; /* Evita desbordes, pero deja que el elemento no ocupe todo el ancho */
+    min-height: 120px;
+    max-height: 320px;
+    background: #1a1a2e; /* Dark background for spectrogram */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: grab;
+    position: relative; /* added so overlay line can be positioned */
+}
+.spectrogram-bar:active { cursor: grabbing; }
+
+.spectrogram-canvas {
+    display: block;
+    height: 100%; /* Use full container height */
+    image-rendering: pixelated; /* Ensures sharp pixels on zoom */
+    transform-origin: left center;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* New: Container for SRT regions */
+.spectrogram-regions-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: auto; /* changed from none to allow region interactions */
+    z-index: 3;
+}
+
+/* New: Style for a single SRT region */
+.srt-region {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid rgba(74, 144, 226, 0.8);
+    border-right: 1px solid rgba(74, 144, 226, 0.8);
+    box-sizing: border-box; /* Ensures border is inside the width */
+    transition: opacity 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+    z-index: 1; /* base stacking for regions */
+    /* make region visually interactive on hover */
+    cursor: default;
+    overflow: visible; /* allow handles to be visible outside the box */
+}
+
+/* small visible handles on the left/right edges to indicate draggable edges */
+.srt-region .handle {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 28px;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.9);
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+    opacity: 0;
+    pointer-events: none; /* handles don't intercept pointer when hidden */
+    transition: opacity 120ms ease, transform 120ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0,0,0,0.6);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* left and right specific positions */
+.srt-region .handle.left { left: -7px; cursor: ew-resize; }
+.srt-region .handle.right { right: -7px; cursor: ew-resize; }
+
+/* show handle when parent region is hoverable/resizable */
+.srt-region.can-resize .handle {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+}
+
+/* subtle highlight when you hover region body (not only edges) */
+.srt-region.can-resize {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12) inset, 0 0 0 2px rgba(255,255,255,0.04);
+}
+
+/* resizing state - stronger visual while dragging */
+.srt-region.resizing {
+    outline: 2px dashed rgba(255,255,255,0.85);
+    transform: scaleY(1.02);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    z-index: 999 !important;
+}
+
+/* show explicit edge cursor when hovering very near the edge of the region */
+.srt-region.edge-left-hover { cursor: ew-resize; }
+.srt-region.edge-right-hover { cursor: ew-resize; }
+
+.srt-region.selected {
+    outline: 2px solid rgba(255,255,255,0.9);
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.2) inset;
+    z-index: 10; /* bring selected region to front */
+    opacity: 1;  /* ensure selected region is fully visible */
+}
+
+/* Progress line that follows playback */
+.spectrogram-progress-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(255,0,0,0.9);
+    pointer-events: none; /* don't block clicks */
+    z-index: 5;
+    transform: translateX(0);
+    transition: background 0.12s linear;
+}
+
+/* New hover line for spectrogram */
+.spectrogram-hover-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px; /* Thin line */
+    background: rgba(255,255,255,0.7); /* White/grey with some transparency */
+    pointer-events: none; /* Don't block interaction with the canvas/bar */
+    z-index: 4; /* Below progress line but above canvas */
+    display: none; /* Hidden by default */
+}
+
+/* Estilos para botones de acción */
+.action-button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius-base);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.action-button.primary {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+}
+
+.action-button.primary:hover {
+    background-color: var(--button-hover-bg);
+}
+
+.action-button:disabled {
+    background-color: #CCCCCC;
+    color: #999999;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* New styles for preprocessing options */
+.preprocessing-options {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.preprocessing-options label {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    cursor: pointer;
+    color: var(--text-color-dark);
+}
+
+.preprocessing-options input[type="radio"] {
+    margin-right: 0.5rem;
+    accent-color: var(--primary-color); /* Highlight color for radio button */
+}
+
+/* New styles for OCR controls */
+.ocr-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.ocr-controls label {
+    font-size: 1rem;
+    color: var(--text-color-dark);
+}
+
+.ocr-controls select {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-base);
+    font-size: 1rem;
+    background-color: var(--panel-bg-color);
+    color: var(--text-color-dark);
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ocr-controls select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+/* New styles for SRT Editor Panel and Table */
+.srt-editor-panel {
+    margin-top: 0.75rem; /* Adjusted for a more compact look */
+}
+
+.srt-table-container {
+    max-height: 250px; /* Limit height for scrollability, adjusted to be more compact */
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-base);
+    background-color: var(--panel-bg-color);
+}
+
+.srt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.srt-table th, .srt-table td {
+    padding: 0.4rem 0.8rem; /* Reduced padding for a more compact table */
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top; /* Align content to the top */
+}
+
+.srt-table thead th {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    position: sticky; /* Make header sticky for scrollable body */
+    top: 0;
+    z-index: 2; /* Ensure header is above other content */
+}
+
+.srt-table tbody tr:nth-child(even) {
+    background-color: #F0F6FC; /* Light stripe for readability */
+}
+
+.srt-table tbody tr:hover {
+    background-color: #E6F2FF; /* Highlight row on hover */
+}
+
+.srt-table td:nth-child(1) { /* # column */
+    width: 5%;
+    min-width: 40px;
+    text-align: center;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.srt-table td:nth-child(2), /* Start time column */
+.srt-table td:nth-child(3) { /* End time column */
+    width: 15%;
+    min-width: 110px;
+    font-family: monospace; /* For time codes */
+    color: var(--text-color-dark);
+}
+
+.srt-table td:nth-child(4) { /* Content column */
+    width: 65%; /* Remaining width */
+    color: var(--text-color-dark);
+}
+
+.srt-table td.editable-content {
+    cursor: text;
+}
+
+.srt-table tbody tr.selected-row {
+    background-color: rgba(46,204,113,0.26); /* slightly stronger soft green */
+    outline: 1px solid rgba(46,204,113,0.30);  /* subtle stronger outline to match region selection */
+}
+
+/* visual hint for disabled regions */
+.srt-region.disabled {
+    pointer-events: none;     /* completely non-interactive */
+    opacity: 0.18;            /* more faded to appear as background */
+    filter: grayscale(40%);   /* slightly desaturated */
+    transform: scaleY(0.98);  /* subtle visual de-emphasis */
+    z-index: 0;               /* push behind the selected region */
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Modal styles for confirmation */
+.modal { position: fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; z-index:9999; }
+.modal-backdrop { position:absolute; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.45); }
+.modal-content { position:relative; z-index:2; width: min(520px, 92%); background: #fff; border-radius: 10px; padding:1.2rem 1.4rem; box-shadow:0 8px 30px rgba(0,0,0,0.25); border:1px solid var(--border-color); }
+
+/* History list item */
+.history-item {
+    display:flex;
+    gap:0.5rem;
+    align-items:center;
+    justify-content:space-between;
+    padding:0.6rem;
+    border-radius:8px;
+    background: linear-gradient(180deg, #fff, #FBFDFF);
+    border:1px solid var(--border-color);
+}
+.history-meta { display:flex; gap:0.75rem; align-items:center; flex:1; min-width:0; }
+.history-title { font-weight:600; color:var(--text-color-dark); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.history-sub { font-size:0.9rem; color:var(--secondary-color); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.history-actions { display:flex; gap:0.4rem; flex-shrink:0; }
+
+/* Responsive design - ajuste para pantallas más pequeñas si es necesario */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 0.5rem;
+        flex-direction: row; /* Botones en fila para móviles */
+        overflow-x: auto; /* Permite desplazamiento horizontal si hay muchos botones */
+        justify-content: space-around;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-button {
+        width: auto; /* Deja que el contenido del botón determine el ancho */
+        margin: 0.3rem;
+        padding: 0.8rem 1rem;
+        text-align: center;
+        flex-shrink: 0; /* Evita que los botones se encojan */
+    }
+
+    .main-content {
+        margin: 0.5rem;
+        padding: 1.5rem;
+    }
+    .main-content h2 {
+        font-size: 1.5rem;
+    }
+    .main-content h3 {
+        font-size: 1.1rem;
+    }
+    .drop-area {
+        padding: 1.5rem;
+    }
+
+    .preprocessing-options, .ocr-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+}
+
+/* Small styles for download progress in Descargar panel */
+#download-progress { box-shadow: inset 0 1px 2px rgba(0,0,0,0.06); }
+#download-progress-bar { border-radius: 6px; }
+
+.image-gallery {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0.5rem;
+    width: 100%;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0.5rem;
+}
+.image-gallery .thumb {
+    width: 96px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+.image-gallery .thumb.selected {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 6px rgba(74,144,226,0.18);
+}
